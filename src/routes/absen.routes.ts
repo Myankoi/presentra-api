@@ -10,7 +10,7 @@ const router = Router();
 
 // GURU
 router.post(
-    "/scan-guru",
+    "/guru/scan-guru",
     authMiddleware,
     roleMiddleware(["guru"]),
     scanAbsenGuru

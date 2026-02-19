@@ -1,7 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
 import { db } from "../db/index.js";
 import { sql, eq, and, desc } from "drizzle-orm";
-import { absenSiswa, siswa } from "../db/schema.js";
+import { absenSiswa, jadwalPiket, kelas, siswa } from "../db/schema.js";
+import { sendNotification } from "../utils/notification.helper.js";
 
 type UpdateAbsenInput = typeof absenSiswa.$inferInsert;
 
@@ -71,6 +72,32 @@ export const bulkAbsenSiswa = async (req: Request, res: Response) => {
             success: true,
             message: `Berhasil mencatat absensi untuk ${dataAbsensi.length} siswa.`
         });
+
+        const tanggalHariIni = new Date();
+
+        // 1. Cari siapa Guru yang dapet jadwal piket HARI INI
+        const listGuruPiket = await db
+            .select({ guruId: jadwalPiket.guruId })
+            .from(jadwalPiket)
+            .where(eq(jadwalPiket.tanggal, tanggalHariIni));
+
+        if (listGuruPiket.length > 0) {
+            const guruIds = listGuruPiket.map(g => g.guruId);
+
+            // Ambil nama kelas buat info di notif
+            const [infoKelas] = await db
+                .select({ nama: kelas.namaKelas })
+                .from(kelas)
+                .where(eq(kelas.id, secretaryKelasId!))
+                .limit(1);
+
+            // 2. Kirim notif HANYA ke Guru Piket
+            await sendNotification(
+                guruIds,
+                "Laporan Absensi Masuk",
+                `Kelas ${infoKelas.nama} baru saja mengirim data absen. Silakan pantau jika ada siswa Alfa.`
+            );
+        }
 
     } catch (error: any) {
         console.error("Bulk Absen Error:", error);
