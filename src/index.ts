@@ -9,6 +9,7 @@ import absenRoutes from "./routes/absen.routes.js";
 import jadwalRoutes from "./routes/jadwal.routes.js";
 import piketRoutes from "./routes/piket.routes.js";
 import { initAttendanceReminder } from "./tasks/attendance-reminder.task.js";
+import laporanRoutes from "./routes/laporan.routes.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -21,6 +22,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/absen", absenRoutes);
 app.use("/api/jadwal", jadwalRoutes);
 app.use("/api/piket", piketRoutes);
+app.use("/api/laporan", laporanRoutes);
 
 initAttendanceReminder();
 
