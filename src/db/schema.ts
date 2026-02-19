@@ -68,11 +68,18 @@ export const absenSiswa = mysqlTable('absen_siswa', {
     unq: uniqueIndex('unique_absen_siswa').on(table.siswaId, table.tanggal),
 }));
 
+export const mapel = mysqlTable("mapel", {
+    id: int("id").primaryKey().autoincrement(),
+    namaMapel: varchar("nama_mapel", { length: 255 }).notNull(),
+    kodeMapel: varchar("kode_mapel", { length: 50 }).unique(),
+});
+
 // 7. JADWAL MENGAJAR
 export const jadwalMengajar = mysqlTable('jadwal_mengajar', {
     id: int('id').primaryKey().autoincrement(),
     guruId: int('guru_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
     kelasId: int('kelas_id').notNull().references(() => kelas.id, { onDelete: 'cascade' }),
+    mapelId: int('mapel_id').notNull().references(() => mapel.id),
     hari: mysqlEnum('hari', ['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu']).notNull(),
     jamMulai: time('jam_mulai').notNull(),
     jamSelesai: time('jam_selesai').notNull(),
