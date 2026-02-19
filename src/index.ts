@@ -4,6 +4,7 @@ import helmet from "helmet";
 import "dotenv/config";
 import "./config/firebase.js";
 import userRoutes from "./routes/userRoutes.js";
+import { authMiddleware, roleMiddleware, errorMiddleware } from "./middlewares/index.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -13,6 +14,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/users", userRoutes);
+
+app.use(errorMiddleware);
 
 app.listen(port, () => {
     console.log(`Server nyala woi http://localhost:${port}`);
