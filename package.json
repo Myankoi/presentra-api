@@ -22,13 +22,16 @@
     "firebase-admin": "^13.6.1",
     "helmet": "^8.1.0",
     "mysql2": "^3.17.2",
-    "node-cron": "^4.2.1"
+    "node-cron": "^4.2.1",
+    "swagger-autogen": "^2.23.7",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^25.3.0",
     "@types/node-cron": "^3.0.11",
+    "@types/swagger-ui-express": "^4.1.8",
     "drizzle-kit": "^0.31.9",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"

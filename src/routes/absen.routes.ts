@@ -7,7 +7,6 @@ import { secretaryScopeMiddleware } from "../middlewares/secretary-scope.middlew
 
 const router = Router();
 
-
 // GURU
 router.post(
     "/guru/scan-guru",
