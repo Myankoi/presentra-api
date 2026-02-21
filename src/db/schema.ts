@@ -80,7 +80,7 @@ export const jadwalMengajar = mysqlTable('jadwal_mengajar', {
     guruId: int('guru_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
     kelasId: int('kelas_id').notNull().references(() => kelas.id, { onDelete: 'cascade' }),
     mapelId: int('mapel_id').notNull().references(() => mapel.id),
-    hari: mysqlEnum('hari', ['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu']).notNull(),
+    hari: mysqlEnum('hari', ['senin', 'selasa', 'rabu', 'kamis', 'jumat']).notNull(),
     jamMulai: time('jam_mulai').notNull(),
     jamSelesai: time('jam_selesai').notNull(),
 });
@@ -89,7 +89,7 @@ export const jadwalMengajar = mysqlTable('jadwal_mengajar', {
 export const jadwalPiket = mysqlTable('jadwal_piket', {
     id: int('id').primaryKey().autoincrement(),
     guruId: int('guru_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-    tanggal: date('tanggal').notNull(),
+    hari: mysqlEnum('hari', ['senin', 'selasa', 'rabu', 'kamis', 'jumat']).notNull(),
     keterangan: varchar('keterangan', { length: 255 }),
 });
 
