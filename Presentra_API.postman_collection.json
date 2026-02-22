@@ -1,0 +1,1107 @@
+{
+    "info": {
+        "name": "Presentra API",
+        "description": "API documentation for the Presentra attendance management system.\n\nAll authenticated endpoints require a Firebase ID Token in the Authorization header:\n`Authorization: Bearer <firebase_id_token>`",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:3000",
+            "type": "string"
+        },
+        {
+            "key": "token",
+            "value": "<firebase_id_token>",
+            "type": "string"
+        }
+    ],
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": "{{token}}",
+                "type": "string"
+            }
+        ]
+    },
+    "item": [
+        {
+            "name": "Auth",
+            "item": [
+                {
+                    "name": "Sync Device (FCM Token)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"fcmToken\": \"your_fcm_device_token_here\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/auth/sync-device",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "sync-device"
+                            ]
+                        },
+                        "description": "Syncs the user's device FCM token for push notifications. Requires authentication."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "User",
+            "item": [
+                {
+                    "name": "Get My Profile",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/users/me",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                "me"
+                            ]
+                        },
+                        "description": "Returns the profile of the currently authenticated user."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Admin - Pengguna",
+            "description": "CRUD operations for users/teachers. Requires `admin` role.",
+            "item": [
+                {
+                    "name": "Get All Pengguna",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/pengguna",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "pengguna"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Pengguna (Guru)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"nama\": \"Budi Santoso\",\n  \"email\": \"budi@school.com\",\n  \"firebaseUid\": \"firebase_uid_from_auth\",\n  \"role\": \"guru\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/pengguna",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "pengguna"
+                            ]
+                        },
+                        "description": "Create a new user. Role options: guru, sekretaris, bk, admin"
+                    }
+                },
+                {
+                    "name": "Update Pengguna",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"nama\": \"Budi Santoso Updated\",\n  \"role\": \"bk\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/pengguna/1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "pengguna",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Pengguna",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/pengguna/1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "pengguna",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Admin - Kelas",
+            "description": "CRUD for classes. Requires `admin` role.",
+            "item": [
+                {
+                    "name": "Get All Kelas",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/kelas",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "kelas"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Kelas",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"namaKelas\": \"XII IPA 1\",\n  \"tahunAjaran\": \"2025/2026\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/kelas",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "kelas"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Kelas",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"namaKelas\": \"XII IPA 2\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/kelas/1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "kelas",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Kelas",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/kelas/1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "kelas",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Admin - QR Code Kelas",
+            "description": "QR code management per class. Requires `admin` role.",
+            "item": [
+                {
+                    "name": "Get QR Kelas",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/kelas/1/qr",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "kelas",
+                                "1",
+                                "qr"
+                            ]
+                        },
+                        "description": "Get the active QR code for a specific class."
+                    }
+                },
+                {
+                    "name": "Regenerate QR Kelas",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/kelas/1/qr/regenerate",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "kelas",
+                                "1",
+                                "qr",
+                                "regenerate"
+                            ]
+                        },
+                        "description": "Regenerate and invalidate the old QR code for a class."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Admin - Siswa",
+            "description": "CRUD for students. Requires `admin` role.",
+            "item": [
+                {
+                    "name": "Get All Siswa",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/siswa",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "siswa"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Siswa",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"nis\": \"12345\",\n  \"nama\": \"Andi Pratama\",\n  \"jenisKelamin\": \"L\",\n  \"kelasId\": 1\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/siswa",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "siswa"
+                            ]
+                        },
+                        "description": "jenisKelamin options: L (Laki-laki), P (Perempuan)"
+                    }
+                },
+                {
+                    "name": "Update Siswa",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"nama\": \"Andi Pratama Updated\",\n  \"kelasId\": 2\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/siswa/1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "siswa",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Siswa",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/siswa/1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "siswa",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Admin - Mapel",
+            "description": "CRUD for subjects. Requires `admin` role.",
+            "item": [
+                {
+                    "name": "Get All Mapel",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/mapel",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "mapel"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Mapel",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"namaMapel\": \"Matematika\",\n  \"kodeMapel\": \"MTK\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/mapel",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "mapel"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Mapel",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"namaMapel\": \"Matematika Wajib\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/mapel/1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "mapel",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Mapel",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/mapel/1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "mapel",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Admin - Jadwal Mengajar",
+            "description": "Teaching schedule management. Requires `admin` role.",
+            "item": [
+                {
+                    "name": "List Jadwal Mengajar",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/jadwal-mengajar",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "jadwal-mengajar"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Jadwal Mengajar",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"guruId\": 1,\n  \"kelasId\": 1,\n  \"mapelId\": 1,\n  \"hari\": \"senin\",\n  \"jamMulai\": \"07:30\",\n  \"jamSelesai\": \"09:00\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/jadwal-mengajar",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "jadwal-mengajar"
+                            ]
+                        },
+                        "description": "hari options: senin, selasa, rabu, kamis, jumat"
+                    }
+                },
+                {
+                    "name": "Delete Jadwal Mengajar",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/jadwal-mengajar/1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "jadwal-mengajar",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Admin - Jadwal Piket",
+            "description": "Duty schedule management. Requires `admin` role.",
+            "item": [
+                {
+                    "name": "List Jadwal Piket",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/jadwal-piket",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "jadwal-piket"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Jadwal Piket",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"guruId\": 1,\n  \"hari\": \"senin\",\n  \"keterangan\": \"Piket pagi\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/jadwal-piket",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "jadwal-piket"
+                            ]
+                        },
+                        "description": "hari options: senin, selasa, rabu, kamis, jumat. keterangan is optional."
+                    }
+                },
+                {
+                    "name": "Delete Jadwal Piket",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/jadwal-piket/1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "jadwal-piket",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Absen - Guru",
+            "description": "Teacher attendance via QR scan. Requires `guru` role.",
+            "item": [
+                {
+                    "name": "Scan Absen Guru",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"tokenQr\": \"qr_token_string_from_scan\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/absen/guru/scan-guru",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "absen",
+                                "guru",
+                                "scan-guru"
+                            ]
+                        },
+                        "description": "Submit QR token scanned from a classroom QR code to record teacher attendance."
+                    }
+                },
+                {
+                    "name": "Get History Absen Guru",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/absen/guru/history",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "absen",
+                                "guru",
+                                "history"
+                            ]
+                        },
+                        "description": "Get the attendance history for the currently logged-in teacher."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Absen - Siswa (Sekretaris)",
+            "description": "Student attendance by class secretary. Requires `sekretaris` role. Class is auto-scoped.",
+            "item": [
+                {
+                    "name": "Bulk Absen Siswa",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"dataAbsensi\": [\n    { \"siswaId\": 1, \"status\": \"hadir\" },\n    { \"siswaId\": 2, \"status\": \"izin\", \"keterangan\": \"Sakit perut\" },\n    { \"siswaId\": 3, \"status\": \"sakit\", \"keterangan\": \"Demam\" },\n    { \"siswaId\": 4, \"status\": \"alfa\" },\n    { \"siswaId\": 5, \"status\": \"terlambat\" }\n  ]\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/absen/siswa/absen",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "absen",
+                                "siswa",
+                                "absen"
+                            ]
+                        },
+                        "description": "Submit bulk attendance. Status options: hadir, izin, sakit, alfa, terlambat. Deadline: 07:30 WIB."
+                    }
+                },
+                {
+                    "name": "Get Daily Recap",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/absen/siswa/recap",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "absen",
+                                "siswa",
+                                "recap"
+                            ]
+                        },
+                        "description": "Get daily attendance recap (grouped by date) for the secretary's class."
+                    }
+                },
+                {
+                    "name": "Get Daily Detail",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/absen/siswa/detail?tanggal=2026-02-22",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "absen",
+                                "siswa",
+                                "detail"
+                            ],
+                            "query": [
+                                {
+                                    "key": "tanggal",
+                                    "value": "2026-02-22",
+                                    "description": "Date in YYYY-MM-DD format"
+                                }
+                            ]
+                        },
+                        "description": "Get per-student attendance detail for a specific date."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Jadwal (Guru)",
+            "description": "Teaching schedule for the logged-in teacher. Requires `guru` role.",
+            "item": [
+                {
+                    "name": "Get Jadwal Hari Ini",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/jadwal/hari-ini?hari=senin",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "jadwal",
+                                "hari-ini"
+                            ],
+                            "query": [
+                                {
+                                    "key": "hari",
+                                    "value": "senin",
+                                    "description": "Optional. Options: senin, selasa, rabu, kamis, jumat. Defaults to today."
+                                }
+                            ]
+                        },
+                        "description": "Get teaching schedule. If `hari` param is omitted, defaults to today's day."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Piket (Monitoring)",
+            "description": "Duty monitoring dashboard. Requires `guru` or `admin` role.",
+            "item": [
+                {
+                    "name": "Get Monitoring Piket",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/piket/monitoring",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "piket",
+                                "monitoring"
+                            ]
+                        },
+                        "description": "Get today's attendance monitoring overview for all classes."
+                    }
+                },
+                {
+                    "name": "Get Detail Kelas Piket",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/piket/kelas/1/detail",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "piket",
+                                "kelas",
+                                "1",
+                                "detail"
+                            ]
+                        },
+                        "description": "Get detailed view of a class: today's schedule, student list with attendance status, and recap."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Dashboard (Admin/BK)",
+            "description": "Dashboard statistics. Requires `admin` or `bk` role.",
+            "item": [
+                {
+                    "name": "Get Summary",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/dashboard/summary",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "dashboard",
+                                "summary"
+                            ]
+                        },
+                        "description": "Get dashboard summary statistics."
+                    }
+                },
+                {
+                    "name": "Get Chart Data",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/dashboard/chart?periode=weekly",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "dashboard",
+                                "chart"
+                            ],
+                            "query": [
+                                {
+                                    "key": "periode",
+                                    "value": "weekly",
+                                    "description": "Options: weekly, monthly. Defaults to weekly."
+                                }
+                            ]
+                        },
+                        "description": "Get chart data for attendance trends."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "BK (Bimbingan Konseling)",
+            "description": "Counseling statistics. Requires `bk` or `admin` role.",
+            "item": [
+                {
+                    "name": "Get Statistik Hari Ini",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/bk/statistik-hari-ini",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "bk",
+                                "statistik-hari-ini"
+                            ]
+                        },
+                        "description": "Get today's student attendance statistics."
+                    }
+                },
+                {
+                    "name": "Get Top Alfa",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/bk/top-alfa?periode=bulan",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "bk",
+                                "top-alfa"
+                            ],
+                            "query": [
+                                {
+                                    "key": "periode",
+                                    "value": "bulan",
+                                    "description": "Optional. Filter period for top absent students."
+                                }
+                            ]
+                        },
+                        "description": "Get students with the most 'alfa' (unexcused absence) records."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Laporan (Reports)",
+            "description": "Attendance reports. Requires `admin`, `bk`, or `guru` role.",
+            "item": [
+                {
+                    "name": "Get Rekap (JSON Preview)",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/laporan/rekap?kelasId=1&bulan=02&tahun=2026",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "laporan",
+                                "rekap"
+                            ],
+                            "query": [
+                                {
+                                    "key": "kelasId",
+                                    "value": "1",
+                                    "description": "Optional. Filter by class ID."
+                                },
+                                {
+                                    "key": "bulan",
+                                    "value": "02",
+                                    "description": "Optional. Month number (01-12)."
+                                },
+                                {
+                                    "key": "tahun",
+                                    "value": "2026",
+                                    "description": "Optional. Year."
+                                },
+                                {
+                                    "key": "startDate",
+                                    "value": "",
+                                    "description": "Optional. Start date (YYYY-MM-DD). Use with endDate.",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "endDate",
+                                    "value": "",
+                                    "description": "Optional. End date (YYYY-MM-DD). Use with startDate.",
+                                    "disabled": true
+                                }
+                            ]
+                        },
+                        "description": "Preview attendance recap as JSON. Supports filtering by date range OR month/year, and optionally by class."
+                    }
+                },
+                {
+                    "name": "Export Laporan Excel",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/laporan/export?kelasId=1&bulan=02&tahun=2026",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "laporan",
+                                "export"
+                            ],
+                            "query": [
+                                {
+                                    "key": "kelasId",
+                                    "value": "1",
+                                    "description": "Optional. Filter by class ID."
+                                },
+                                {
+                                    "key": "bulan",
+                                    "value": "02",
+                                    "description": "Optional. Month number."
+                                },
+                                {
+                                    "key": "tahun",
+                                    "value": "2026",
+                                    "description": "Optional. Year."
+                                },
+                                {
+                                    "key": "startDate",
+                                    "value": "",
+                                    "description": "Optional. YYYY-MM-DD.",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "endDate",
+                                    "value": "",
+                                    "description": "Optional. YYYY-MM-DD.",
+                                    "disabled": true
+                                }
+                            ]
+                        },
+                        "description": "Download attendance report as an Excel (.xlsx) file. Same filters as rekap."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Notifications",
+            "description": "Notification inbox. Requires authentication.",
+            "item": [
+                {
+                    "name": "Get Notifications",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/notifications",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "notifications"
+                            ]
+                        },
+                        "description": "Get all notifications for the logged-in user."
+                    }
+                },
+                {
+                    "name": "Mark Notification as Read",
+                    "request": {
+                        "method": "PUT",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/notifications/1/read",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "notifications",
+                                "1",
+                                "read"
+                            ]
+                        },
+                        "description": "Mark a specific notification as read by its ID."
+                    }
+                }
+            ]
+        }
+    ]
+}
