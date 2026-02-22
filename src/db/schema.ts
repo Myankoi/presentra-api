@@ -68,6 +68,7 @@ export const absenSiswa = mysqlTable('absen_siswa', {
     unq: uniqueIndex('unique_absen_siswa').on(table.siswaId, table.tanggal),
 }));
 
+// MAPEL
 export const mapel = mysqlTable("mapel", {
     id: int("id").primaryKey().autoincrement(),
     namaMapel: varchar("nama_mapel", { length: 255 }).notNull(),

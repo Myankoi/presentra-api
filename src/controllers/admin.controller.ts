@@ -1,129 +1,169 @@
 import type { Request, Response, NextFunction } from "express";
-import { db } from "../db/index.js";
-import { kelas, siswa, mapel, jadwalMengajar, jadwalPiket } from "../db/schema.js";
-import { eq, desc } from "drizzle-orm";
+import * as adminService from "../services/admin.service.js";
+import { sendSuccess, sendCreated, sendOk } from "../utils/response.js";
 
-// --- KELAS ---
+// ============ GURU / PENGGUNA ============
+
+export const getAllPengguna = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const data = await adminService.getAllPengguna();
+        sendSuccess(res, data);
+    } catch (err) { next(err); }
+};
+
+export const createGuru = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        await adminService.createGuru(req.body);
+        sendCreated(res, "Pengguna berhasil ditambahkan");
+    } catch (err) { next(err); }
+};
+
+export const updateGuru = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        await adminService.updateGuru(Number(req.params.id), req.body);
+        sendOk(res, "Data pengguna berhasil diupdate");
+    } catch (err) { next(err); }
+};
+
+export const deleteGuru = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        await adminService.deleteGuru(Number(req.params.id));
+        sendOk(res, "Pengguna berhasil dihapus");
+    } catch (err) { next(err); }
+};
+
+// ============ KELAS ============
+
 export const getAllKelas = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const data = await db.select().from(kelas).orderBy(desc(kelas.createdAt));
-        res.status(200).json({ success: true, data });
-    } catch (error) { next(error); }
+        const data = await adminService.getAllKelas();
+        sendSuccess(res, data);
+    } catch (err) { next(err); }
 };
 
 export const createKelas = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        await db.insert(kelas).values(req.body);
-        res.status(201).json({ success: true, message: "Kelas berhasil dibuat" });
-    } catch (error) { next(error); }
+        await adminService.createKelas(req.body);
+        sendCreated(res, "Kelas berhasil dibuat");
+    } catch (err) { next(err); }
 };
 
 export const updateKelas = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { id } = req.params;
-        await db.update(kelas).set(req.body).where(eq(kelas.id, Number(id)));
-        res.status(200).json({ success: true, message: "Kelas berhasil diupdate" });
-    } catch (error) { next(error); }
+        await adminService.updateKelas(Number(req.params.id), req.body);
+        sendOk(res, "Kelas berhasil diupdate");
+    } catch (err) { next(err); }
 };
 
 export const deleteKelas = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { id } = req.params;
-        await db.delete(kelas).where(eq(kelas.id, Number(id)));
-        res.status(200).json({ success: true, message: "Kelas berhasil dihapus" });
-    } catch (error) { next(error); }
+        await adminService.deleteKelas(Number(req.params.id));
+        sendOk(res, "Kelas berhasil dihapus");
+    } catch (err) { next(err); }
 };
 
-// --- SISWA ---
+// ============ SISWA ============
+
 export const getAllSiswa = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const data = await db.select().from(siswa).orderBy(siswa.nama);
-        res.status(200).json({ success: true, data });
-    } catch (error) { next(error); }
+        const data = await adminService.getAllSiswa();
+        sendSuccess(res, data);
+    } catch (err) { next(err); }
 };
 
 export const createSiswa = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        await db.insert(siswa).values(req.body);
-        res.status(201).json({ success: true, message: "Siswa berhasil ditambahkan" });
-    } catch (error) { next(error); }
+        await adminService.createSiswa(req.body);
+        sendCreated(res, "Siswa berhasil ditambahkan");
+    } catch (err) { next(err); }
 };
 
 export const updateSiswa = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { id } = req.params;
-        await db.update(siswa).set(req.body).where(eq(siswa.id, Number(id)));
-        res.status(200).json({ success: true, message: "Data siswa berhasil diupdate" });
-    } catch (error) { next(error); }
+        await adminService.updateSiswa(Number(req.params.id), req.body);
+        sendOk(res, "Data siswa berhasil diupdate");
+    } catch (err) { next(err); }
 };
 
 export const deleteSiswa = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { id } = req.params;
-        await db.delete(siswa).where(eq(siswa.id, Number(id)));
-        res.status(200).json({ success: true, message: "Siswa berhasil dihapus" });
-    } catch (error) { next(error); }
+        await adminService.deleteSiswa(Number(req.params.id));
+        sendOk(res, "Siswa berhasil dihapus");
+    } catch (err) { next(err); }
 };
 
-// --- MAPEL ---
+// ============ MAPEL ============
+
 export const getAllMapel = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const data = await db.select().from(mapel).orderBy(mapel.namaMapel);
-        res.status(200).json({ success: true, data });
-    } catch (error) { next(error); }
+        const data = await adminService.getAllMapel();
+        sendSuccess(res, data);
+    } catch (err) { next(err); }
 };
 
 export const createMapel = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        await db.insert(mapel).values(req.body);
-        res.status(201).json({ success: true, message: "Mapel berhasil ditambahkan" });
-    } catch (error) { next(error); }
+        await adminService.createMapel(req.body);
+        sendCreated(res, "Mata pelajaran berhasil ditambahkan");
+    } catch (err) { next(err); }
 };
 
 export const updateMapel = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { id } = req.params;
-        await db.update(mapel).set(req.body).where(eq(mapel.id, Number(id)));
-        res.status(200).json({ success: true, message: "Mapel berhasil diupdate" });
-    } catch (error) { next(error); }
+        await adminService.updateMapel(Number(req.params.id), req.body);
+        sendOk(res, "Mata pelajaran berhasil diupdate");
+    } catch (err) { next(err); }
 };
 
 export const deleteMapel = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { id } = req.params;
-        await db.delete(mapel).where(eq(mapel.id, Number(id)));
-        res.status(200).json({ success: true, message: "Mapel berhasil dihapus" });
-    } catch (error) { next(error); }
+        await adminService.deleteMapel(Number(req.params.id));
+        sendOk(res, "Mata pelajaran berhasil dihapus");
+    } catch (err) { next(err); }
 };
 
-// --- JADWAL MENGAJAR ---
+// ============ JADWAL MENGAJAR ============
+
+export const listJadwalMengajar = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const data = await adminService.listJadwalMengajar();
+        sendSuccess(res, data);
+    } catch (err) { next(err); }
+};
+
 export const createJadwalMengajar = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        await db.insert(jadwalMengajar).values(req.body);
-        res.status(201).json({ success: true, message: "Jadwal mengajar berhasil dibuat" });
-    } catch (error) { next(error); }
+        await adminService.createJadwalMengajar(req.body);
+        sendCreated(res, "Jadwal mengajar berhasil dibuat");
+    } catch (err) { next(err); }
 };
 
 export const deleteJadwalMengajar = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { id } = req.params;
-        await db.delete(jadwalMengajar).where(eq(jadwalMengajar.id, Number(id)));
-        res.status(200).json({ success: true, message: "Jadwal mengajar berhasil dihapus" });
-    } catch (error) { next(error); }
+        await adminService.deleteJadwalMengajar(Number(req.params.id));
+        sendOk(res, "Jadwal mengajar berhasil dihapus");
+    } catch (err) { next(err); }
 };
 
-// --- JADWAL PIKET ---
+// ============ JADWAL PIKET ============
+
+export const listJadwalPiket = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const data = await adminService.listJadwalPiket();
+        sendSuccess(res, data);
+    } catch (err) { next(err); }
+};
+
 export const createJadwalPiket = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        await db.insert(jadwalPiket).values(req.body);
-        res.status(201).json({ success: true, message: "Jadwal piket berhasil dibuat" });
-    } catch (error) { next(error); }
+        await adminService.createJadwalPiket(req.body);
+        sendCreated(res, "Jadwal piket berhasil dibuat");
+    } catch (err) { next(err); }
 };
 
 export const deleteJadwalPiket = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { id } = req.params;
-        await db.delete(jadwalPiket).where(eq(jadwalPiket.id, Number(id)));
-        res.status(200).json({ success: true, message: "Jadwal piket berhasil dihapus" });
-    } catch (error) { next(error); }
+        await adminService.deleteJadwalPiket(Number(req.params.id));
+        sendOk(res, "Jadwal piket berhasil dihapus");
+    } catch (err) { next(err); }
 };
