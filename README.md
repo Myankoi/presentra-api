@@ -16,11 +16,12 @@ Route → Controller → Service → DB (Drizzle ORM)
 src/
 ├── config/           # Firebase Admin SDK
 ├── db/               # Schema & koneksi database (Drizzle)
-├── middlewares/      # auth, role, error, secretary-scope
+├── middlewares/      # auth, role, error, secretary-scope, upload (multer)
 ├── types/            # AppError & Express.Request augmentation
 ├── utils/            # Response helpers (sendSuccess, sendOk, dll)
 ├── services/         # Business logic & query DB
 │   ├── admin.service.ts
+│   ├── user.service.ts
 │   ├── qr.service.ts
 │   ├── dashboard.service.ts
 │   ├── laporan.service.ts
@@ -108,6 +109,36 @@ x-bypass-user-id: 1     # ID user di DB (default: Admin)
 | Method | Path | Deskripsi |
 |--------|------|-----------|
 | POST | `/api/auth/sync-device` | Sinkronisasi FCM token device |
+
+---
+
+### 👤 User Management *(Admin)*
+| Method | Path | Deskripsi |
+|--------|------|-----------|
+| GET | `/api/users/me` | Profil user yang sedang login |
+| POST | `/api/users` | Buat user baru + akun Firebase (single) |
+| POST | `/api/users/bulk-import` | Import massal user via file Excel (.xlsx) |
+
+**POST `/api/users`** — Payload:
+```json
+{
+  "nama": "Budi Santoso",
+  "email": "budi@sekolah.id",
+  "role": "guru",
+  "linkedSiswaId": null
+}
+```
+- Password default: `Presentra2026!`
+- Role options: `admin`, `guru`, `sekretaris`, `bk`
+- Jika insert DB gagal, akun Firebase otomatis di-rollback (dihapus).
+
+**POST `/api/users/bulk-import`** — Multipart form-data:
+- Field: `file` (file `.xlsx`)
+- Kolom wajib di Excel: `NAMA`, `EMAIL`, `ROLE` (opsional: `KODE_GURU`)
+- Jika user sudah ada di DB dengan dummy UID (`FIREBASE_UID_*`), email & Firebase UID akan diupdate.
+- Jika user belum ada, akan dibuat baru.
+- Kegagalan per-baris tidak menghentikan proses baris lainnya.
+- Response berisi: `totalProcessed`, `successCount`, `failedCount`, dan array `errors`.
 
 ---
 

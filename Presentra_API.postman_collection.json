@@ -62,6 +62,7 @@
         },
         {
             "name": "User",
+            "description": "User profile and management. Create/Bulk-import requires `admin` role.",
             "item": [
                 {
                     "name": "Get My Profile",
@@ -79,6 +80,63 @@
                             ]
                         },
                         "description": "Returns the profile of the currently authenticated user."
+                    }
+                },
+                {
+                    "name": "Create User (Firebase Sync)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"nama\": \"Budi Santoso\",\n  \"email\": \"budi@sekolah.id\",\n  \"role\": \"guru\",\n  \"linkedSiswaId\": null\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/users",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users"
+                            ]
+                        },
+                        "description": "Create a single user. A Firebase Auth account is auto-created with default password 'Presentra2026!'. If the DB insert fails, the Firebase account is rolled back (deleted). Role options: admin, guru, sekretaris, bk. Requires `admin` role."
+                    }
+                },
+                {
+                    "name": "Bulk Import Users (Excel)",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "file",
+                                    "type": "file",
+                                    "src": "",
+                                    "description": "Excel file (.xlsx) with columns: KODE_GURU (optional), NAMA, EMAIL, ROLE"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/users/bulk-import",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                "bulk-import"
+                            ]
+                        },
+                        "description": "Bulk import users from an Excel (.xlsx) file. Required columns: NAMA, EMAIL, ROLE. Optional: KODE_GURU.\n\n- If a user exists with a dummy Firebase UID (FIREBASE_UID_*), their email and Firebase account are updated.\n- If a user does not exist, a new Firebase account and DB record are created.\n- Individual row failures do NOT stop the entire import.\n\nResponse includes: totalProcessed, successCount, failedCount, results, errors.\n\nRequires `admin` role. Max file size: 5MB."
                     }
                 }
             ]
