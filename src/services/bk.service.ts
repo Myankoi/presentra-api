@@ -1,30 +1,34 @@
 import { db } from "../db/index.js";
 import { absenSiswa, absenGuru, siswa, kelas, users } from "../db/schema.js";
-import { eq, and, count, sql, desc, gte } from "drizzle-orm";
+import { eq, count, desc, gte, and } from "drizzle-orm";
 
 export const getStatistikHariIni = async () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const [totalAlfa] = await db
-        .select({ count: count() })
+    // Count each status for today
+    const results = await db
+        .select({
+            status: absenSiswa.status,
+            count: count(),
+        })
         .from(absenSiswa)
-        .where(and(eq(absenSiswa.status, "alfa"), eq(absenSiswa.tanggal, today)));
+        .where(eq(absenSiswa.tanggal, today))
+        .groupBy(absenSiswa.status);
 
-    const [kelasBermasalah] = await db
-        .select({ count: count(sql`DISTINCT ${absenSiswa.kelasId}`) })
-        .from(absenSiswa)
-        .where(and(eq(absenSiswa.status, "alfa"), eq(absenSiswa.tanggal, today)));
-
-    const [totalTerlambat] = await db
+    // Total unique students in system
+    const [totalRow] = await db
         .select({ count: count() })
-        .from(absenSiswa)
-        .where(and(eq(absenSiswa.status, "terlambat"), eq(absenSiswa.tanggal, today)));
+        .from(siswa);
+
+    const statusMap = Object.fromEntries(results.map(r => [r.status, r.count]));
 
     return {
-        totalAlfa: totalAlfa.count,
-        totalKelasBermasalah: kelasBermasalah.count,
-        totalTerlambat: totalTerlambat.count,
+        totalSiswa: totalRow.count,
+        hadir: statusMap["hadir"] ?? 0,
+        izin: statusMap["izin"] ?? 0,
+        sakit: statusMap["sakit"] ?? 0,
+        alfa: statusMap["alfa"] ?? 0,
     };
 };
 
