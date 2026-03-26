@@ -9,6 +9,13 @@ export const getNotifications = async (req: Request, res: Response, next: NextFu
     } catch (err) { next(err); }
 };
 
+export const getUnreadCount = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const count = await notifService.getUnreadCount(req.user!.id);
+        sendSuccess(res, { count });
+    } catch (err) { next(err); }
+};
+
 export const markAsRead = async (req: Request, res: Response, next: NextFunction) => {
     try {
         await notifService.markAsRead(Number(req.params.id), req.user!.id);

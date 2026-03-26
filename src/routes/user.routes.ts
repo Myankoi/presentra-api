@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getMyProfile, createUser, bulkImportUsers } from "../controllers/user.controller.js";
+import { getMyProfile, updateMyProfile, createUser, bulkImportUsers } from "../controllers/user.controller.js";
 import { authMiddleware, roleMiddleware } from "../middlewares/index.js";
 import { upload } from "../middlewares/upload.middleware.js";
 
@@ -7,6 +7,7 @@ const router = Router();
 
 // Profile — any authenticated user
 router.get("/me", authMiddleware, getMyProfile);
+router.put("/me", authMiddleware, updateMyProfile);
 
 // Single user creation — admin only
 router.post("/", authMiddleware, roleMiddleware(["admin"]), createUser);

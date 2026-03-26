@@ -1,6 +1,6 @@
 import { db } from "../db/index.js";
 import { notifications } from "../db/schema.js";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, and, sql } from "drizzle-orm";
 import { AppError } from "../types/index.js";
 
 export const getNotifications = async (userId: number) => {
@@ -9,6 +9,19 @@ export const getNotifications = async (userId: number) => {
         .from(notifications)
         .where(eq(notifications.userId, userId))
         .orderBy(desc(notifications.createdAt));
+};
+
+export const getUnreadCount = async (userId: number) => {
+    const [result] = await db
+        .select({ count: sql<number>`count(*)` })
+        .from(notifications)
+        .where(
+            and(
+                eq(notifications.userId, userId),
+                eq(notifications.isRead, false)
+            )
+        );
+    return result?.count ?? 0;
 };
 
 export const markAsRead = async (notifId: number, userId: number) => {

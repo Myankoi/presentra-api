@@ -39,10 +39,24 @@ export const bulkAbsenSiswa = async (req: Request, res: Response) => {
     const { dataAbsensi } = req.body;
     const secretaryKelasId = req.secretaryKelasId; // Dari secretaryScopeMiddleware
     const adminId = req.user!.id; // ID User yang menginput
-    const tanggalHariIni = new Date();
+
+
+    const jakartaNow = new Date(
+        new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Jakarta' })
+    );
+
+    const tanggalHariIni = jakartaNow;
 
     if (!Array.isArray(dataAbsensi) || dataAbsensi.length === 0) {
         return res.status(400).json({ message: "Data absensi tidak valid atau kosong." });
+    }
+
+    const invalidItems = dataAbsensi.filter((item: any) => !item.siswaId);
+    if (invalidItems.length > 0) {
+        return res.status(400).json({
+            success: false,
+            message: `Terdapat ${invalidItems.length} data absensi dengan siswaId kosong. Pastikan semua item memiliki properti 'siswaId'.`
+        });
     }
 
     try {
@@ -73,13 +87,17 @@ export const bulkAbsenSiswa = async (req: Request, res: Response) => {
             message: `Berhasil mencatat absensi untuk ${dataAbsensi.length} siswa.`
         });
 
-        const tanggalHariIni = new Date();
+
 
         // 1. Cari siapa Guru yang dapet jadwal piket HARI INI
+        const targetHari = new Intl.DateTimeFormat('id-ID', { weekday: 'long' })
+            .format(tanggalHariIni)
+            .toLowerCase();
+
         const listGuruPiket = await db
             .select({ guruId: jadwalPiket.guruId })
             .from(jadwalPiket)
-            .where(eq(jadwalPiket.tanggal, tanggalHariIni));
+            .where(eq(jadwalPiket.hari, targetHari as any));
 
         if (listGuruPiket.length > 0) {
             const guruIds = listGuruPiket.map(g => g.guruId);
@@ -182,6 +200,7 @@ export const getDailyDetail = async (req: Request, res: Response, next: NextFunc
         // Ambil daftar siswa dan status absennya di tanggal tsb
         const detail = await db
             .select({
+                siswaId: sql<number>`${siswa}.id`,
                 nama: siswa.nama,
                 nis: siswa.nis,
                 status: absenSiswa.status,
@@ -196,12 +215,75 @@ export const getDailyDetail = async (req: Request, res: Response, next: NextFunc
             )
             .where(eq(siswa.kelasId, kelasId!));
 
+        const rekapAbsen = { hadir: 0, izinSakit: 0, alfa: 0 };
+        detail.forEach(s => {
+            if (s.status === "hadir") rekapAbsen.hadir++;
+            else if (s.status === "izin" || s.status === "sakit") rekapAbsen.izinSakit++;
+            else if (s.status === "alfa") rekapAbsen.alfa++;
+        });
+
         res.status(200).json({
             success: true,
             data: detail,
             stats: {
                 totalSiswa: detail.length,
-                terisi: detail.filter(s => s.status !== null).length
+                terisi: detail.filter(s => s.status !== null).length,
+                rekapAbsen
+            }
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// ============ DAILY SUMMARY (Beranda Sekretaris) ============
+
+export const getDailySummary = async (req: Request, res: Response, next: NextFunction) => {
+    const kelasId = req.secretaryKelasId;
+
+    // Tanggal hari ini (WIB)
+    const jakartaNow = new Date(
+        new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Jakarta' })
+    );
+
+    try {
+        // 1. Hitung total siswa di kelas
+        const totalSiswaResult = await db
+            .select({ count: sql<number>`count(*)` })
+            .from(siswa)
+            .where(eq(siswa.kelasId, kelasId!));
+
+        const totalSiswa = totalSiswaResult[0]?.count ?? 0;
+
+        // 2. Ambil rekap absensi hari ini per status
+        const rekapResult = await db
+            .select({
+                hadir: sql<number>`count(case when ${absenSiswa.status} = 'hadir' then 1 end)`,
+                izin: sql<number>`count(case when ${absenSiswa.status} = 'izin' then 1 end)`,
+                sakit: sql<number>`count(case when ${absenSiswa.status} = 'sakit' then 1 end)`,
+                alfa: sql<number>`count(case when ${absenSiswa.status} = 'alfa' then 1 end)`,
+                terlambat: sql<number>`count(case when ${absenSiswa.status} = 'terlambat' then 1 end)`,
+            })
+            .from(absenSiswa)
+            .where(
+                and(
+                    eq(absenSiswa.kelasId, kelasId!),
+                    eq(absenSiswa.tanggal, jakartaNow)
+                )
+            );
+
+        const rekap = rekapResult[0] ?? { hadir: 0, izin: 0, sakit: 0, alfa: 0, terlambat: 0 };
+        const terisi = rekap.hadir + rekap.izin + rekap.sakit + rekap.alfa + rekap.terlambat;
+
+        res.status(200).json({
+            success: true,
+            message: "Summary absensi hari ini berhasil diambil.",
+            data: {
+                tanggal: jakartaNow.toISOString().split('T')[0],
+                totalSiswa,
+                terisi,
+                belumAbsen: totalSiswa - terisi,
+                ...rekap
             }
         });
     } catch (error) {

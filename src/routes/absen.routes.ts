@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { bulkAbsenSiswa, getDailyDetail, getDailyRecap } from "../controllers/absen-siswa.controller.js";
+import { bulkAbsenSiswa, getDailyDetail, getDailyRecap, getDailySummary } from "../controllers/absen-siswa.controller.js";
 import { getHistoryAbsenGuru, scanAbsenGuru } from "../controllers/absen-guru.controller.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 import { roleMiddleware } from "../middlewares/role.middleware.js";
@@ -45,6 +45,14 @@ router.get(
     roleMiddleware(["sekretaris"]),
     secretaryScopeMiddleware,
     getDailyDetail
+);
+
+router.get(
+    "/siswa/summary",
+    authMiddleware,
+    roleMiddleware(["sekretaris"]),
+    secretaryScopeMiddleware,
+    getDailySummary
 );
 
 export default router;

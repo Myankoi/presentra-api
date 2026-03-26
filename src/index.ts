@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import "dotenv/config";
+import os from "os";
 import "./config/firebase.js";
 import { errorMiddleware } from "./middlewares/index.js";
 import { initAttendanceReminder } from "./tasks/attendance-reminder.task.js";
@@ -23,7 +24,7 @@ const port = process.env.PORT || 3000;
 
 // Global Middleware
 app.use(helmet());
-app.use(cors());
+app.use(cors({ origin: "*" })); // Allow all origins (restrict in production)
 app.use(express.json());
 
 // Routes
@@ -38,11 +39,20 @@ app.use("/api/laporan", laporanRoutes);
 app.use("/api/bk", bkRoutes);
 app.use("/api/notifications", notificationRoutes);
 
+
 // Error handler (harus paling bawah)
 app.use(errorMiddleware);
 
 initAttendanceReminder();
 
-app.listen(port, () => {
-    console.log(`🚀 Server running on http://localhost:${port}`);
+app.listen(Number(port), "0.0.0.0", () => {
+    // Get local network IP for easy mobile testing
+    const nets = os.networkInterfaces();
+    const localIp = Object.values(nets)
+        .flat()
+        .find((n) => n?.family === "IPv4" && !n.internal)?.address ?? "unknown";
+
+    console.log(`🚀 Server running on:`);
+    console.log(`   Local:   http://localhost:${port}`);
+    console.log(`   Network: http://${localIp}:${port}`);
 });

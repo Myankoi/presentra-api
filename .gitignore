@@ -4,3 +4,4 @@ dist/
 serviceAccountKey.json
 *.log
 ARCHITECTURE.md
+Instructions.md
